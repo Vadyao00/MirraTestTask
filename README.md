@@ -1,22 +1,5 @@
 # Admin Dashboard (Minimal Slice)
 
-Тестовый проект админ-панели с функционалом управления клиентами, платежами и курсом токенов.
-
-## Технологический стек
-
-### Backend
-- ASP.NET Core 8 (Minimal API)
-- Entity Framework Core
-- SQLite (для локальной разработки)
-- PostgreSQL (для Docker-окружения)
-- JWT Authentication
-
-### Frontend
-- React
-- Vite
-- TypeScript
-- Axios
-
 ## Функциональность
 
 - Аутентификация пользователей (JWT)
@@ -69,7 +52,6 @@ Password: admin123
 
 ### Аутентификация
 ```bash
-# Логин
 curl -X POST http://localhost:5000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "admin@mirra.dev", "password": "admin123"}'
@@ -77,58 +59,29 @@ curl -X POST http://localhost:5000/auth/login \
 
 ### Клиенты
 ```bash
-# Получение списка клиентов
 curl -X GET http://localhost:5000/clients \
   -H "Authorization: Bearer {your_token}"
 ```
 
 ### Платежи
 ```bash
-# Получение последних 5 платежей
 curl -X GET http://localhost:5000/payments?take=5 \
   -H "Authorization: Bearer {your_token}"
 ```
 
 ### Курс токенов
 ```bash
-# Получение текущего курса
 curl -X GET http://localhost:5000/rate \
   -H "Authorization: Bearer {your_token}"
 
-# Обновление курса
 curl -X POST http://localhost:5000/rate \
   -H "Authorization: Bearer {your_token}" \
   -H "Content-Type: application/json" \
   -d '{"rate": 12.5}'
 ```
 
-## Дополнительные возможности
-
-- Полноценная JWT-аутентификация с refresh-токенами
-- Docker-окружение с PostgreSQL
-- Автоматические миграции при запуске
-- Начальные данные (seed data) для тестирования
-
-## Структура проекта
-
-```
-├── backend/
-│   └── MirraApi/
-│       ├── Core/
-│       │   ├── Contracts/
-│       │   ├── MirraApi.Application/
-│       │   └── MirraApi.Domain/
-│       ├── Infrastructure/
-│       │   └── MirraApi.Persistence/
-│       └── Presentation/
-│           └── Mirra.API/
-├── frontend/
-│   └── MirraFront/
-└── docker-compose.yml
-```
-
 ## Примечания
 
-- При запуске через Docker все необходимые миграции и начальные данные применяются автоматически
-- В локальном режиме используется SQLite, в Docker - PostgreSQL
+- При запуске все необходимые миграции и начальные данные применяются автоматически
+- В локальном режиме используется SQLite (InMemory), в Docker - PostgreSQL
 - Для работы с API через Postman или другой инструмент необходимо использовать токен, полученный после аутентификации 
