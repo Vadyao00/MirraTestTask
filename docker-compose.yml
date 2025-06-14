@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: mirra-postgres
+    environment:
+      POSTGRES_DB: mirradb
+      POSTGRES_USER: mirrauser
+      POSTGRES_PASSWORD: mirrapass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mirra-network
+
+  backend:
+    build:
+      context: ./backend/MirraApi
+      dockerfile: Presentation/Mirra.API/Dockerfile
+    container_name: mirra-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=mirradb;Username=mirrauser;Password=mirrapass
+      - ASPNETCORE_URLS=http://+:5000
+      - JwtSettings__ValidIssuer=MirraAPI
+      - JwtSettings__ValidAudience=http://localhost:5173
+      - JwtSettings__Secret=SECRETSECRETSECRETSECRETSECRETSECRET
+      - JwtSettings__Expires=30
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:
+      - mirra-network
+
+  frontend:
+    build:
+      context: ./frontend/MirraFront
+      dockerfile: ../Dockerfile
+    container_name: mirra-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - mirra-network
+
+volumes:
+  postgres_data:
+
+networks:
+  mirra-network:
+    driver: bridge
